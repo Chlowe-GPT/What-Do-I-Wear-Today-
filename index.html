@@ -1,0 +1,251 @@
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OOTD - Digital Closet</title>
+    <!-- Tailwind CSS for modern styling -->
+    <script src="https://tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 font-sans min-h-screen">
+
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="flex flex-col items-center justify-center min-h-screen px-4">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100">
+            <h1 class="text-3xl font-extrabold text-slate-800 text-center mb-2">✨ OOTD Stylist</h1>
+            <p class="text-slate-500 text-center mb-6">Your personal smart digital closet</p>
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Username</label>
+                <input type="text" id="usernameInput" placeholder="Enter your name..." class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+            <button onclick="handleLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg transition">Log In / Continue</button>
+        </div>
+    </div>
+
+    <!-- MAIN APP INTERFACE (Hidden by default) -->
+    <div id="appScreen" class="hidden min-h-screen flex flex-col">
+        <!-- Navbar -->
+        <nav class="bg-white border-b border-slate-100 px-6 py-4 flex justify-between items-center shadow-sm">
+            <span class="text-xl font-black text-indigo-600">✨ OOTD Stylist</span>
+            <div class="flex items-center gap-4">
+                <span id="userGreeting" class="text-slate-700 font-medium"></span>
+                <button onclick="handleLogout()" class="text-sm font-semibold text-rose-600 hover:text-rose-700 bg-rose-50 px-3 py-1.5 rounded-lg transition">Logout</button>
+            </div>
+        </nav>
+
+        <div class="max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
+            
+            <!-- LEFT PANEL: WEATHER SELECTOR & GENERATED OUTFIT -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Weather Inputs -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-100">
+                    <h2 class="text-lg font-bold text-slate-800 mb-4">🌦️ Today's Weather</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-600 mb-1">Temperature (°C)</label>
+                            <input type="number" id="tempInput" value="20" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-600 mb-1">Condition</label>
+                            <select id="conditionInput" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="sunny">☀️ Sunny / Clear</option>
+                                <option value="cloudy">☁️ Cloudy</option>
+                                <option value="rainy">🌧️ Rainy</option>
+                                <option value="snowy">❄️ Snowy</option>
+                            </select>
+                        </div>
+                        <button onclick="generateOutfit()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-md">👗 Generate Outfit</button>
+                    </div>
+                </div>
+
+                <!-- Generated Outfit Display -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-100">
+                    <h2 class="text-lg font-bold text-slate-800 mb-4">👟 What to Wear</h2>
+                    <div id="outfitResult" class="space-y-3 text-slate-500 italic text-center py-6">
+                        Enter weather criteria and generate your first outfit suggestion!
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: CLOSET MANAGEMENT -->
+            <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-md border border-slate-100 flex flex-col">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-slate-800">👚 My Closet</h2>
+                    <p class="text-xs text-slate-400">Items persist automatically across sessions</p>
+                </div>
+
+                <!-- Add Clothes Form -->
+                <div class="bg-slate-50 p-4 rounded-xl mb-6 grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Item Description / Name</label>
+                        <input type="text" id="itemName" placeholder="e.g., Black Puffer, Blue Jeans" class="w-full text-sm px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Category</label>
+                        <select id="itemCategory" class="w-full text-sm px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="top">👕 Top</option>
+                            <option value="bottom">👖 Bottom</option>
+                            <option value="outerwear">🧥 Outerwear</option>
+                            <option value="shoes">👟 Shoes</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Max Temp (°C)</label>
+                        <input type="number" id="itemMaxTemp" value="25" class="w-full text-sm px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div class="sm:col-span-4 flex items-center justify-between mt-2 pt-2 border-t border-slate-200">
+                        <span class="text-xs font-semibold text-slate-600">Weather Suitability:</span>
+                        <div class="flex gap-4">
+                            <label class="inline-flex items-center text-xs"><input type="checkbox" id="checkSunny" checked class="mr-1 rounded"> Sunny</label>
+                            <label class="inline-flex items-center text-xs"><input type="checkbox" id="checkCloudy" checked class="mr-1 rounded"> Cloudy</label>
+                            <label class="inline-flex items-center text-xs"><input type="checkbox" id="checkRainy" checked class="mr-1 rounded"> Rainy</label>
+                            <label class="inline-flex items-center text-xs"><input type="checkbox" id="checkSnowy" class="mr-1 rounded"> Snowy</label>
+                        </div>
+                        <button onclick="addClothingItem()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold px-4 py-2 rounded-lg transition shadow">Add Item</button>
+                    </div>
+                </div>
+
+                <!-- Closet Grid List -->
+                <div id="closetGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 flex-1 overflow-y-auto max-h-[500px] pr-2">
+                    <!-- Dynamic clothes elements rendered here -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CORE PLATFORM SCRIPT -->
+    <script>
+        let currentUser = null;
+        let closet = [];
+
+        window.onload = function() {
+            const savedUser = localStorage.getItem('ootd_current_user');
+            if (savedUser) {
+                login(savedUser);
+            }
+        };
+
+        function handleLogin() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (!username) return alert('Please enter a username to log in!');
+            login(username);
+        }
+
+        function login(username) {
+            currentUser = username;
+            localStorage.setItem('ootd_current_user', username);
+            
+            const savedCloset = localStorage.getItem(`ootd_closet_${username}`);
+            closet = savedCloset ? JSON.parse(savedCloset) : getMockData();
+            
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('appScreen').classList.remove('hidden');
+            document.getElementById('userGreeting').innerText = `Hello, ${username}! 👋`;
+            
+            renderCloset();
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('ootd_current_user');
+            currentUser = null;
+            closet = [];
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('appScreen').classList.add('hidden');
+            document.getElementById('usernameInput').value = '';
+        }
+
+        function getMockData() {
+            return [
+                { id: 1, name: "Heavy Winter Coat", category: "outerwear", maxTemp: 5, conditions: ["snowy", "cloudy", "rainy"] },
+                { id: 2, name: "Comfortable Hoodie", category: "top", maxTemp: 18, conditions: ["sunny", "cloudy", "rainy"] },
+                { id: 3, name: "White Summer Tee", category: "top", maxTemp: 35, conditions: ["sunny", "cloudy"] },
+                { id: 4, name: "Dark Cargo Pants", category: "bottom", maxTemp: 22, conditions: ["sunny", "cloudy", "rainy", "snowy"] },
+                { id: 5, name: "Denim Shorts", category: "bottom", maxTemp: 35, conditions: ["sunny"] },
+Use code with caution.
+{ id: 6, name: "Waterproof Hiking Boots", category: "shoes", maxTemp: 15, conditions: ["rainy", "snowy"] },
+{ id: 7, name: "Classic White Sneakers", category: "shoes", maxTemp: 35, conditions: ["sunny", "cloudy"] }
+];
+}
+function saveClosetToStorage() {
+if (currentUser) {
+localStorage.setItem(ootd_closet_${currentUser}, JSON.stringify(closet));
+}
+}
+function addClothingItem() {
+const name = document.getElementById('itemName').value.trim();
+const category = document.getElementById('itemCategory').value;
+const maxTemp = parseInt(document.getElementById('itemMaxTemp').value);
+if (!name) return alert('Please give your clothing item a name!');
+const conditions = [];
+if (document.getElementById('checkSunny').checked) conditions.push('sunny');
+if (document.getElementById('checkCloudy').checked) conditions.push('cloudy');
+if (document.getElementById('checkRainy').checked) conditions.push('rainy');
+if (document.getElementById('checkSnowy').checked) conditions.push('snowy');
+if (conditions.length === 0) return alert('Please select at least one weather suitability condition!');
+const newItem = {
+id: Date.now(),
+name,
+category,
+maxTemp,
+conditions
+};
+closet.push(newItem);
+saveClosetToStorage();
+renderCloset();
+document.getElementById('itemName').value = '';
+}
+function removeClothingItem(id) {
+closet = closet.filter(item => item.id !== id);
+saveClosetToStorage();
+renderCloset();
+}
+function renderCloset() {
+const grid = document.getElementById('closetGrid');
+grid.innerHTML = '';
+if (closet.length === 0) {
+grid.innerHTML = <div class="col-span-full text-center text-slate-400 py-12 italic">Your closet is empty. Add items above!</div>;
+return;
+}
+const icons = { top: '👕', bottom: '👖', outerwear: '🧥', shoes: '👟' };
+closet.forEach(item => {
+const card = document.createElement('div');
+card.className = "bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col justify-between hover:shadow-sm transition";
+card.innerHTML = <div> <div class="flex justify-between items-start mb-2"> <span class="text-2xl">${icons[item.category] || '👔'}</span> <button onclick="removeClothingItem(${item.id})" class="text-slate-400 hover:text-rose-600 font-bold text-sm transition">✕ Remove</button> </div> <h4 class="font-bold text-slate-800 text-sm mb-1">${item.name}</h4> <div class="text-[11px] text-slate-500 font-medium">Max Temp: ${item.maxTemp}°C</div> </div> <div class="flex flex-wrap gap-1 mt-3"> ${item.conditions.map(c =>${c}).join('')} </div> ;
+grid.appendChild(card);
+});
+}
+function generateOutfit() {
+const targetTemp = parseInt(document.getElementById('tempInput').value);
+const targetCondition = document.getElementById('conditionInput').value;
+const safeItems = closet.filter(item => {
+const isTempSafe = targetTemp <= item.maxTemp;
+const isConditionMatching = item.conditions.includes(targetCondition);
+return isTempSafe && isConditionMatching;
+});
+const tops = safeItems.filter(i => i.category === 'top');
+const bottoms = safeItems.filter(i => i.category === 'bottom');
+const shoes = safeItems.filter(i => i.category === 'shoes');
+const outerwear = safeItems.filter(i => i.category === 'outerwear');
+const pickRandom = (arr) => arr.length > 0 ? arr[Math.floor(Math.random() * arr.length)] : null;
+const selectedTop = pickRandom(tops);
+const selectedBottom = pickRandom(bottoms);
+const selectedShoes = pickRandom(shoes);
+let selectedOuterwear = null;
+if (targetTemp <= 16) {
+selectedOuterwear = pickRandom(outerwear);
+}
+const outputContainer = document.getElementById('outfitResult');
+if (!selectedTop || !selectedBottom || !selectedShoes) {
+outputContainer.className = "bg-rose-50 text-rose-700 text-sm p-4 rounded-xl text-center font-medium border border-rose-100";
+outputContainer.innerHTML = ⚠️ <strong>No complete match found!</strong><br>  Your closet doesn't have compatible item combinations tracking under ${targetTemp}°C and "${targetCondition}" settings yet. Add more clothes or update temp ceilings!;
+return;
+}
+outputContainer.className = "space-y-3";
+outputContainer.innerHTML = <div class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-100 rounded-xl"> <span class="text-2xl">👕</span> <div><div class="text-xs text-slate-400 font-semibold uppercase">Top</div><div class="text-slate-800 font-bold text-sm">${selectedTop.name}</div></div> </div> <div class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-100 rounded-xl"> <span class="text-2xl">👖</span> <div><div class="text-xs text-slate-400 font-semibold uppercase">Bottom</div><div class="text-slate-800 font-bold text-sm">${selectedBottom.name}</div></div> </div> ${selectedOuterwear ?
+
+🧥
+Outer Layer${selectedOuterwear.name}
+
+: ''} <div class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-100 rounded-xl"> <span class="text-2xl">👟</span> <div><div class="text-xs text-slate-400 font-semibold uppercase">Shoes</div><div class="text-slate-800 font-bold text-sm">${selectedShoes.name}</div></div> </div> <p class="text-center text-xs text-emerald-600 font-semibold mt-4">🚀 Looking clean! Have an amazing day.</p>;
